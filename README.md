@@ -1,34 +1,41 @@
-# PoeProjetFinal
-Projet Epsilon Corporation
-
 # **Projet d'entreprise Epsilon Corporation**
 
-Membres du projet :
+## Sommaire
+
+[I. Le projet](#I-Le-projet)
+&ensp;&ensp;[1. Le contexte](#1-Le-contexte)
+&ensp;&ensp;[2. Le besoin](#2-Le-besoin)
+&ensp;&ensp;[2. L'équipe](#3-L'équipe)
+  
+---
+
+## I. Le projet
+
+### 1. Le contexte :
+
+
+### 2. Le besoin :
+
+L'entreprise Epsilon Corporation à besoin de trois applications web:
+* Un blog statique (Jekyll)
+* Une application JAVA Tomcat
+* Un web serveur Python
+
+### 3. L'équipe :
 
 * Amine AHMAMOU
 * Romuald SENIGALLIA
 * Matthieu RAMANANARIVO
 * Moustapha Mohamedou TALL
 
-## Sommaire
-
-[I. Exemple1](#I-Exemple1)
-&ensp;&ensp;[1. Exemple_sous_1](#1-Exemple_sous_1)
-
----
-## Avant-propos:
-L'entreprise Epsilon Corporation à besoin de trois applications web:
-* Un blog statique (Jekyll)
-* Une application JAVA Tomcat
-* Un web serveur Python
 
 ### TITRE GRAS
 **Texte gras** 
 
 ## I. Organisation
 
-### 1. Notre github
-### 2. Notre gitlab
+### 1. 
+### 2. 
 
 * liste
 * 
