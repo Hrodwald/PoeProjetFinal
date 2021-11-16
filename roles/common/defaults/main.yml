@@ -32,14 +32,4 @@ machines_groups:
       image: ami-08b6d44b4f6f7b279
       type: t3.large
       count: 1
-
-mysql_dir1: "/srv/mysql/mysql"
-mysql_dir2: "/srv/mysql/mysql-dump/"
-port_mysql: "3306"
-
-port_phpadmin: "8081"
-
-tomcat_dir1: "/srv/tomcat/webapps/"
-tomcat_dir2: "/srv/tomcat/conf"
-port_tomcat: "8082"
 ...
