@@ -1,0 +1,25 @@
+---
+
+# Installation httpd et demarrage
+
+- name: Installation d'httpd 
+  yum:
+    name: httpd
+    state: present
+
+- name: Demarrer le service httpd
+  service:
+    name: httpd 
+    state: started
+
+- name: Ouverture du port 80
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+
+- name: Redemarre firewalld
+  service: 
+    name: firewalld 
+    state: restarted
+
