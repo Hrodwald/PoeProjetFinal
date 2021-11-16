@@ -32,9 +32,6 @@
       - containerd.io
     state: latest
     update_cache: yes
-    
-- name: install docker
-  yum: name=docker state=latest
 
 - name: check docker service
   command: systemctl enable --now docker

@@ -1,5 +1,4 @@
 ---
-
 # Installation httpd et demarrage
 
 - name: Installation d'httpd 
@@ -23,3 +22,4 @@
     name: firewalld 
     state: restarted
 
+...

@@ -28,5 +28,4 @@ gitlab/gitlab-ce:latest"
 --run-untagged="true" \
 --locked="false" \
 --access-level="not_protected""
-
 ...
