@@ -1,0 +1,11 @@
+phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    links:
+      - db
+    ports:
+      - '8080:80'
+    restart: always
+    environment:
+      PMA_USER: root
+      PMA_PASSWORD: admin
+   
