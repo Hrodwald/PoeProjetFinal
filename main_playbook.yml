@@ -14,27 +14,29 @@
   become_method: sudo
   roles:
     - basics
-    - install_docker
+    - docker_install
 
 - hosts: ansible_git_vpn
   become: yes
   become_method: sudo
   roles:
-    - # install_ansible
-    - # install_git
-    - # install_openvpn
+    - gitlab_install
+    - openvpn_install # NON ACTIF POUR LE MOMENT
 
 - hosts: apache_serv
   become: yes
   become_method: sudo
   roles:
-    - 
+    - httpd_install
+    - # jekyll_install
 
 - hosts: tomcat_serv
   become: yes
   become_method: sudo
   roles:
-    - setup_application_server
+    - mysql_install
+    - phpmyadmin_install
+    - tomcat_install
 
 - hosts: python_serv
   become: yes
