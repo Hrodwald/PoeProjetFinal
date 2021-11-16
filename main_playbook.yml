@@ -16,6 +16,14 @@
     - basics
     - install_docker
 
+- hosts: ansible_git_vpn
+  become: yes
+  become_method: sudo
+  roles:
+    - # install_ansible
+    - # install_git
+    - # install_openvpn
+
 - hosts: apache_serv
   become: yes
   become_method: sudo
