@@ -1,0 +1,56 @@
+---
+- name: copy war file
+  copy: 
+    src: "target/"
+    dest: "{{ tomcat_dir1 }}"
+
+- name: copy sql file
+  copy: 
+    src: "USER.sql"
+    dest: "{{ mysql_dir2 }}"
+
+- name: Install container mysql
+  docker_container:
+    name: db
+    image: mysql:5.7
+    volumes:
+       - "{{ mysql_dir1 }}:/var/lib/mysql"
+       - "{{ mysql_dir2 }}:/docker-entrypoint-initdb.d"
+    env:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testdb1
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: root
+    ports:
+       - "{{ port_mysql }}:3306"
+
+- name: chown mysql
+  shell: 
+    cmd: sudo docker exec db chown -R mysql:mysql /var/lib/mysql 
+
+- name: Install container Phpadmin
+  docker_container:
+    name: phpadmin
+    image: phpmyadmin/phpmyadmin
+    links: db
+    ports:
+      - "{{ port_phpadmin }}:80"
+    env:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+
+- name: Install container tomcat
+  docker_container:
+    name: tomcat
+    image: tomcat
+    links: db
+    volumes:
+      - "{{ tomcat_dir1 }}:/usr/local/tomcat/webapps/"
+    ports:
+      - "{{ port_tomcat }}:8080"
+    env:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testdb1
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: root
+...
