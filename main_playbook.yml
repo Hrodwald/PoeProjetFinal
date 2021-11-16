@@ -2,7 +2,7 @@
 - hosts: localhost
   gather_facts: no
   roles:
-    - basics # Installation de Pytho, Ansible & liés
+    - basics # Installation de Python, Ansible & liés
     - init_mainserv # Connexion à aws
 #    - role: conf_instances
 #      when: provides is defined

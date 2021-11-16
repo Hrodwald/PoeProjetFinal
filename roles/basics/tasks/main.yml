@@ -7,14 +7,6 @@
     name: epel-release
     state: present
 
-- name: Prep for Python
-  pip:
-    name:
-      - botocore
-      - boto
-      - boto3
-    state: present
-
 - name: Install python pip
   yum:
     name: python3-pip
