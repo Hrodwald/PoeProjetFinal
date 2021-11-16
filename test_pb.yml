@@ -1,8 +1,0 @@
----
-- hosts: localhost
-  gather_facts: no
-  shell: docker-compose run {{ item }}
-  args:
-    chdir: /tomcat_serv_install/tasks/main.yml
-  become: true
-...
