@@ -1,0 +1,21 @@
+---
+# Installation du conteneur Gitlab Community Edition
+  - name: Création du conteneur Gitlab CE
+    command: "sudo docker run --detach \
+--hostname 3.122.243.148 \
+--publish 9343:443 --publish 9080:80 --publish 9222:22 \
+--name gitlab \
+--restart always \
+--volume /srv/gitlab/config:/etc/gitlab:Z \
+--volume /srv/gitlab/logs:/var/log/gitlab:Z \
+--volume /srv/gitlab/data:/var/opt/gitlab:Z \
+gitlab/gitlab-ce:latest"
+
+# Afficher le mot de passe de gitlab
+# Le stocker dans une variable ?
+
+- name: Mot de passe de base GitLab
+  command: docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
+  become: yes
+
+...

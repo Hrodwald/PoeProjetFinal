@@ -1,0 +1,16 @@
+---
+# Installation du conteneur Jenkins
+# Probleme avec l'utilisation de pip pour docker_container
+
+    - name: Création du conteneur jenkins
+      command: "docker run -d --name jenkins -p 8080:8080 \ 
+      -p 50000:50000 -v jenkins:/var/jenkins_home \ 
+      jenkins/jenkins:lts-jdk11"
+      become: yes
+
+# Afficher le mot de passe de jenkins
+# Le stocker dans une variable ?
+    - name: Mot de passe de base Jenkins
+      command: docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+      become: yes
+...

@@ -1,0 +1,53 @@
+---
+- name: remove old docker packages
+  yum:
+    name:
+      - docker
+      - docker-client
+      - docker-client-latest
+      - docker-common
+      - docker-latest
+      - docker-latest-logrotate
+      - docker-logrotate
+      - docker-engine
+    state: absent
+
+- name: Install pre-req packages
+  yum:
+    name: "{{item}}"
+    state: latest
+  loop:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+
+- name: Add Docker CE repo
+  shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: install docker packages
+  yum:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: latest
+    update_cache: yes
+
+- name: Start and enable the Docker daemon
+  service: name=docker state=started enabled=yes
+
+- name: DL Docker Compose
+  shell: curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+- name: apply executable permissions
+  shell: chmod +x /usr/local/bin/docker-compose
+
+- name: check if link exists
+  stat:
+    path: /usr/bin/docker-compose
+  register: link_docker_compose
+
+- name: create symbolic link
+  shell: ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+  when: link_docker_compose.stat.exists == False
+...  
