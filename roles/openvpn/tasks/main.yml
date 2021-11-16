@@ -1,0 +1,30 @@
+MANQUE <<<
+
+
+- il nous faut le DNS public/ip récupéré en variable au provisioning
+- il nous faut le nom client en variable
+- comment automatiser la saisie des info requises (passphrase)
+
+'''
+
+---
+#copie du docker-compose du openvpn dans machine cible pour activation
+- name: copy playbook vpn
+  copy:
+    src: vpn
+    dest: "/home/centos/"
+    mode: "751"
+
+#lancement du docker-compose qui lance openvpn, puis création certificat et user
+- name: appel du docker-compose vpn
+  shell: {{ item }}
+  with_items:
+    - "docker-compose -f /home/centos/vpn/docker-compose.vpn.yml up -d"
+    - "docker-compose run --rm openvpn ovpn_genconfig -u udp://{{ DNS public }}"
+    - "docker-compose run --rm openvpn ovpn_initpki"
+    - "sudo chown -R $(whoami): ./openvpn-data"
+    - "docker-compose up -d openvpn"
+    - "export CLIENTNAME="your_client_name""
+    - "docker-compose run --rm openvpn easyrsa build-client-full $CLIENTNAME"
+    - "docker-compose run --rm openvpn easyrsa build-client-full $CLIENTNAME nopass"
+    - "docker-compose run --rm openvpn ovpn_getclient $CLIENTNAME > $CLIENTNAME.ovpn
