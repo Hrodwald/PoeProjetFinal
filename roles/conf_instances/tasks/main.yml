@@ -1,0 +1,29 @@
+---
+- name: clear inventory file
+  file:
+    path: "{{ inventory }}"
+    state: absent
+
+- name: create new inventory file
+  file:
+    path: "{{ inventory }}"
+    mode: '0755'
+    state: touch
+
+- name: init instances list
+  set_fact:
+    instances: []
+
+- name: instanciate machines of each groups
+  include: tasks/provide_group.yml
+  vars:
+    group: "{{ item }}"
+  loop: "{{ machines_groups }}"
+
+- name: Wait for connection
+  delegate_to: "{{ item.public_dns_name }}"
+  wait_for_connection:
+    delay: 60
+    timeout: 320
+  loop: "{{ instances }}"
+...

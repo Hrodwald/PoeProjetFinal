@@ -32,14 +32,20 @@
       - containerd.io
     state: latest
     update_cache: yes
+    
+- name: install docker
+  yum: name=docker state=latest
 
-- name: Start and enable the Docker daemon
-  service: name=docker state=started enabled=yes
+- name: check docker service
+  command: systemctl enable --now docker
+
+- name: install python-docker
+  yum: name=python-docker state=latest enablerepo=extras
 
 - name: DL Docker Compose
   shell: curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
-- name: apply executable permissions
+- name: Apply executable permissions
   shell: chmod +x /usr/local/bin/docker-compose
 
 - name: check if link exists

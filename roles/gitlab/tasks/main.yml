@@ -17,5 +17,4 @@ gitlab/gitlab-ce:latest"
 - name: Mot de passe de base GitLab
   command: docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
   become: yes
-
 ...

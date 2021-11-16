@@ -1,0 +1,29 @@
+---
+- name: "Creation de {{ machine.count }} instance(s) : nom={{ machine.name }}"
+  ec2:
+    aws_access_key: "{{ aws.access_key }}"
+    aws_secret_key: "{{ aws.secret_key }}"
+    key_name: "{{ connection.account_private_key }}"
+
+    region: "{{ aws.region }}"
+    vpc_subnet_id: "{{ aws.subnet_id }}"
+
+    image: "{{ machine.image }}"
+    instance_type: "{{ machine.type }}"
+    count: "{{ machine.count }}"
+    instance_tags:
+       Name: "{{ machine.name }}"
+
+    group: default
+    assign_public_ip: yes
+    wait: yes
+  register: ec2
+
+- name: "Add machine {{ machine.name }} to inventory"
+  shell: "echo '{{ item.private_ip }}' >> {{ inventory }}"
+  with_items: "{{ ec2.instances }}"
+
+- name: add machine to instances list
+  set_fact:
+    instances: "{{ instances + ec2.instances }}"
+...

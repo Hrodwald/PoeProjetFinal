@@ -1,0 +1,13 @@
+---
+- name: "create inventory group {{ group.name }}"
+  shell: "echo '[{{ group.name }}]' >> {{ inventory }}"
+
+- name: "provide machines of group {{ group.name }}"
+  include: tasks/provide.yml
+  vars:
+    machine: "{{ item }}"
+  loop: "{{ group.machines }}"
+
+- name: "add empty line in inventory file"
+  shell: "echo '' >> {{ inventory }}"
+...

@@ -1,0 +1,35 @@
+---
+- hosts: localhost
+  gather_facts: no
+  roles:
+    - basics # Installation de Pytho, Ansible & liés
+    - init_mainserv # Connexion à aws
+#    - role: conf_instances
+#      when: provides is defined
+#  post_tasks:
+#    - meta: refresh_inventory
+
+- hosts: all
+  become: yes
+  become_method: sudo
+  roles:
+    - basics
+    - install_docker
+
+- hosts: apache_serv
+  become: yes
+  become_method: sudo
+  roles:
+    - 
+
+- hosts: tomcat_serv
+  become: yes
+  become_method: sudo
+  roles:
+    - setup_application_server
+
+- hosts: python_serv
+  become: yes
+  become_method: sudo
+  roles:
+...
