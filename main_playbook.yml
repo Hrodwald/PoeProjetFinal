@@ -34,9 +34,7 @@
   become: yes
   become_method: sudo
   roles:
-    - mysql_install
-    - phpmyadmin_install
-    - tomcat_install
+    - tomcat_serv_install
 
 - hosts: python_serv
   become: yes
