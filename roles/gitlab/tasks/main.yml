@@ -1,7 +1,7 @@
 ---
 # Installation du conteneur Gitlab Community Edition
-  - name: Création du conteneur Gitlab CE
-    command: "sudo docker run --detach \
+- name: Création du conteneur Gitlab CE
+  command: "sudo docker run --detach \
 --hostname 3.122.243.148 \
 --publish 9343:443 --publish 9080:80 --publish 9222:22 \
 --name gitlab \
@@ -11,10 +11,22 @@
 --volume /srv/gitlab/data:/var/opt/gitlab:Z \
 gitlab/gitlab-ce:latest"
 
-# Afficher le mot de passe de gitlab
-# Le stocker dans une variable ?
+- name: Installation d'un runner Gitlab
+  command: "docker run -d --name gitlab-runner --restart always \
+  -v gitlab-runner:/etc/gitlab-runner \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  gitlab/gitlab-runner:latest"
 
-- name: Mot de passe de base GitLab
-  command: docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
-  become: yes
+- name: Enregistrement du runner
+  command: "docker exec -it gitlab-runner gitlab-runner register --non-interactive \
+--executor "docker" \
+--docker-image alpine:latest \
+--url "http://3.127.236.112:9080/" \
+--registration-token "87J75TMw-8rvjn7Qvz-x" \
+--description "docker-runner" \
+--tag-list "docker,aws" \
+--run-untagged="true" \
+--locked="false" \
+--access-level="not_protected""
+
 ...
