@@ -1,7 +1,7 @@
 ---
 # Installation du conteneur Gitlab Community Edition
-  - name: Création du conteneur Gitlab CE
-    command: "sudo docker run --detach \
+- name: Création du conteneur Gitlab CE
+  command: "sudo docker run --detach \
 --hostname 3.122.243.148 \
 --publish 9343:443 --publish 9080:80 --publish 9222:22 \
 --name gitlab \
