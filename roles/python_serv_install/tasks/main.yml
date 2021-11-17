@@ -1,0 +1,34 @@
+---
+- name: Create Project Directory
+  file:
+    path: ~/project
+    state: directory
+    owner: centos
+    group: centos
+
+  - name: Src file Python Server
+  copy:
+    src: target/
+    dest: ~/project/
+    owner: centos
+    group: centos
+    mode: 775
+    directory_mode: yes
+
+- name: Dockerfile Python Server
+  copy:
+    src: "Dockerfile"
+    dest: ~/project/
+    owner: centos
+    group: centos
+    mode: 755
+    directory_mode: yes
+
+- name: copy Jenkinsfile 
+  copy:
+    src: "Jenkinsfile"
+    dest: ~/project/
+    owner: centos
+    group: centos
+    mode: 755
+    directory_mode: yes

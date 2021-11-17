@@ -2,12 +2,13 @@
 - hosts: localhost
   gather_facts: no
   roles:
-    - basics # Installation de Python, Ansible & liés
-    - init_mainserv # Connexion à aws
-#    - role: conf_instances
-#      when: provides is defined
-#  post_tasks:
-#    - meta: refresh_inventory
+    - basics
+    - init_mainserv
+    - gitlab_install
+    - role: conf_instances
+      when: provides is defined
+  post_tasks:
+    - meta: refresh_inventory
 
 - hosts: all
   become: yes
@@ -16,28 +17,22 @@
     - basics
     - docker_install
 
-- hosts: ansible_git_vpn
-  become: yes
-  become_method: sudo
-  roles:
-    - gitlab_install
-    - openvpn_install # NON ACTIF POUR LE MOMENT
-
-- hosts: apache_serv
+- hosts: EpsiCorp_Jekyll
   become: yes
   become_method: sudo
   roles:
     - httpd_install
-    - # jekyll_install
 
-- hosts: tomcat_serv
+- hosts: EpsiCorp_Tomcat
   become: yes
   become_method: sudo
   roles:
     - tomcat_serv_install
 
-- hosts: python_serv
+- hosts: EpsiCorp_Python
   become: yes
   become_method: sudo
   roles:
+    - jenkins_install
+    - python_serv_install
 ...

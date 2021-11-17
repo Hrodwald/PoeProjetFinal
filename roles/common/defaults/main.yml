@@ -1,35 +1,40 @@
 ---
-# inventory: "~/inventory.ini"
+inventory: "~/inventory.ini"
 
 connection:
-  account_private_key: "~/.ssh/g1_aws_key"
-  private_key: "~/.ssh/g1_aws_key.pem"
+  account_private_key: "~/.ssh/aws_key_g1"
+  private_key: "~/.ssh/aws_key_g1.pem"
 
 aws:
   region: eu-central-1
-  subnet_id: subnet-XXXXX
+  subnet_id: subnet-048068b0139ea48a8
   access_key: "{{ lookup('file', '~/aws_access/access_key') }}"
   secret_key: "{{ lookup('file', '~/aws_access/secret_key') }}"
 
 machines_groups:
-  - name: jekyll
+  - name: EpsiCorp_Jekyll
     machines:
-    - name: G1_jekyll
+    - name: EpsiCorp_Jekyll
       image: ami-08b6d44b4f6f7b279
       type: t3.large
       count: 1
 
-  - name: tomcat
+  - name: EpsiCorp_Tomcat
     machines:
-    - name: G1_tomcat
+    - name: EpsiCorp_Tomcat
       image: ami-08b6d44b4f6f7b279
       type: t3.large
       count: 1
 
-  - name: python
+  - name: EpsiCorp_Python
     machines:
-    - name: G1_python
+    - name: EpsiCorp_Python
       image: ami-08b6d44b4f6f7b279
       type: t3.large
       count: 1
+
+jenkins_image: jenkins/jenkins:lts
+jenkins_port1: "8080"
+jenkins_port2: "50000"
+jenkins_dir: "/srv/jenkins"
 ...

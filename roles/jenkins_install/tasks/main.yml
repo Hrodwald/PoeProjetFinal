@@ -1,0 +1,15 @@
+---
+- name: Create jenkins directory
+  file: path="{{ jenkins_dir }}" recurse=yes state=directory owner=centos group=centos
+
+- name: Install Jenkins container
+  docker_container:
+    name: jenkins
+    image: "{{ jenkins_image }}"
+    state: started
+    ports:
+      - "{{ jenkins_port1 }}:8080"
+      - "{{ jenkins_port2 }}:50000"
+    volumes:
+      - "{{ jenkins_dir }}:/var/jenkins_home"
+      - /var/run/docker.sock:/var/run/docker.sock
