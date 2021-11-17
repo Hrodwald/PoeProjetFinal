@@ -21,11 +21,13 @@ gitlab/gitlab-ce:latest"
   command: "docker exec -it gitlab-runner gitlab-runner register --non-interactive \
 --executor "docker" \
 --docker-image alpine:latest \
---url "http://3.127.236.112:9080/" \
+--url "http://3.70.214.132/" \
+--clone-url "http://3.70.214.132/" \
 --registration-token "87J75TMw-8rvjn7Qvz-x" \
 --description "docker-runner" \
 --tag-list "docker,aws" \
 --run-untagged="true" \
 --locked="false" \
 --access-level="not_protected""
+
 ...
