@@ -6,14 +6,14 @@
     owner: centos
     group: centos
 
-  - name: Src file Python Server
-  copy:
-    src: target/
-    dest: ~/project/
-    owner: centos
-    group: centos
-    mode: 775
-    directory_mode: yes
+- name: Src file Python Server
+copy:
+  src: target/
+  dest: ~/project/
+  owner: centos
+  group: centos
+  mode: 775
+  directory_mode: yes
 
 - name: Dockerfile Python Server
   copy:
