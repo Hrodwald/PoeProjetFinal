@@ -14,14 +14,16 @@
     instance_tags:
        Name: "{{ machine.name }}"
 
-    group: default
+    group_id: "{{ security_group.id }}"
     assign_public_ip: yes
     wait: yes
   register: ec2
 
 - name: "Add machine {{ machine.name }} to inventory"
-  shell: "echo '{{ item.private_ip }}' >> {{ inventory }}"
-  with_items: "{{ ec2.instances }}"
+  shell: "echo '{{ instance.private_ip }}' >> {{ inventory }}"
+  loop: "{{ ec2.instances }}"
+  loop_control:
+    loop_var: instance
 
 - name: add machine to instances list
   set_fact:
