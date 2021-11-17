@@ -1,21 +1,35 @@
 ---
-# Installation du conteneur Gitlab Community Edition
-- name: Création du conteneur Gitlab CE
-  command: "sudo docker run --detach \
---hostname 3.122.243.148 \
---publish 9343:443 --publish 9080:80 --publish 9222:22 \
---name gitlab \
---restart always \
---volume /srv/gitlab/config:/etc/gitlab:Z \
---volume /srv/gitlab/logs:/var/log/gitlab:Z \
---volume /srv/gitlab/data:/var/opt/gitlab:Z \
-gitlab/gitlab-ce:latest"
 
-- name: Installation d'un runner Gitlab
-  command: "docker run -d --name gitlab-runner --restart always \
-  -v gitlab-runner:/etc/gitlab-runner \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  gitlab/gitlab-runner:latest"
+# Installation du conteneur Gitlab Community Edition
+- name: Installation de Gitlab CE 
+  docker_container:
+    name: gitlab
+    image: gitlab/gitlab-ce:latest
+    restart: yes
+    recreate: yes
+    privileged: yes
+    exposed:
+      - 443
+      - 80
+      - 22
+    ports:
+      - 443:443
+      - 80:80
+      - 22:22
+    volumes:
+      - /srv/gitlab/config:/etc/gitlab:Z
+      - /srv/gitlab/logs:/var/log/gitlab:Z
+      - /srv/gitlab/data:/var/opt/gitlab:Z
+
+- name : Installation d'un runner Gitlab
+  docker_container:
+    name: gitlab-runner
+    image: gitlab/gitlab-ce:latest
+    restart: yes
+    recreate: yes
+    volumes:
+      - gitlab-runner:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
 
 - name: Enregistrement du runner
   command: "docker exec -it gitlab-runner gitlab-runner register --non-interactive \
@@ -23,7 +37,7 @@ gitlab/gitlab-ce:latest"
 --docker-image alpine:latest \
 --url "http://3.70.214.132/" \
 --clone-url "http://3.70.214.132/" \
---registration-token "87J75TMw-8rvjn7Qvz-x" \
+--registration-token "bvscxnydEoiz5Sunx22N" \
 --description "docker-runner" \
 --tag-list "docker,aws" \
 --run-untagged="true" \
