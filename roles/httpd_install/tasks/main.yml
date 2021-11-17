@@ -1,25 +1,27 @@
 ---
-# Installation httpd et demarrage
+# Installation httpd et configuration du volume
 
-- name: Installation d'httpd 
-  yum:
+- name: creation du volume website
+  file:
+    path: ./website
+    state: directory
+    owner: centos
+    group: centos
+
+- name: installation du conteneur httpd
+  docker_container:
     name: httpd
-    state: present
+    image: httpd:latest
+    restart: yes
+    recreate: yes
+    ports:
+      - 8080:80
+    volumes:
+      - ./website:/usr/local/apache2/htdocs
 
 - name: Demarrer le service httpd
   service:
     name: httpd 
     state: started
-
-- name: Ouverture du port 80
-  firewalld:
-    service: http
-    permanent: true
-    state: enabled
-
-- name: Redemarre firewalld
-  service: 
-    name: firewalld 
-    state: restarted
 
 ...
