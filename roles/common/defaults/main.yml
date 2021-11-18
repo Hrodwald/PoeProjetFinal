@@ -2,7 +2,7 @@
 inventory: "~/inventory.ini"
 
 connection:
-  account_private_key: "~/.ssh/aws_key_g1"
+  account_private_key: "aws_key_g1"
   private_key: "~/.ssh/aws_key_g1.pem"
 
 aws:
