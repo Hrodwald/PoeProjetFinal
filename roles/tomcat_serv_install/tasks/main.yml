@@ -25,9 +25,9 @@
     ports:
        - "3306:3306"
 
-- name: chown mysql
-  shell: 
-    cmd: sudo docker exec db chown -R mysql:mysql /var/lib/mysql 
+#- name: chown mysql
+#  shell: 
+#    cmd: sudo docker exec db chown -R mysql:mysql /var/lib/mysql 
 
 - name: Install container Phpadmin
 #  become: yes
