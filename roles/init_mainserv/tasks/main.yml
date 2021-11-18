@@ -1,4 +1,12 @@
 ---
+- name: install python package boto and boto3
+  pip:
+    name:
+      - botocore
+      - boto
+      - boto3
+    state: present
+
 - name: Create Access Key
   ec2_key:
     aws_access_key: "{{ aws.access_key }}"
