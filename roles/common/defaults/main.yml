@@ -11,6 +11,9 @@ aws:
   access_key: "{{ lookup('file', '~/aws_access/access_key') }}"
   secret_key: "{{ lookup('file', '~/aws_access/secret_key') }}"
 
+security_group:
+  id: sg-0d99574644c9388ee
+
 machines_groups:
   - name: EpsiCorp_Jekyll
     machines:
