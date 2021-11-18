@@ -10,7 +10,7 @@
     dest: "/srv/mysql/mysql-dump/"
 
 - name: Install container mysql
-  become: yes
+#  become: yes
   docker_container:
     name: db
     image: mysql:5.7
@@ -30,7 +30,7 @@
     cmd: sudo docker exec db chown -R mysql:mysql /var/lib/mysql 
 
 - name: Install container Phpadmin
-  become: yes
+#  become: yes
   docker_container:
     name: phpadmin
     image: phpmyadmin/phpmyadmin
@@ -42,7 +42,7 @@
       MYSQL_ROOT_PASSWORD: root
 
 - name: Install container tomcat
-  become: yes
+#  become: yes
   docker_container:
     name: tomcat
     image: tomcat
