@@ -102,13 +102,77 @@ La deuxièume difficulé était liée à un travail de recherche sur le web afin
  
  Suite à la demande de l'entreprise Epsilon pour faire un déploiment  des ses apllications, on a choisi d'utiliser l'outil ansible afin d'automatiser l'installation et le running de l'application Tomcat.
  
+ ![Optional Text](tomcat.png)
+ 
  2- Travaux :
  
  Notre démarche consiste à creer 2 playbook, le main playbook sera le playbook qui englobe tous les tasks, par contre le deuxieme playbook (tomcat_serv_insatall) est sous forme d'un role qui copie dans un premier temps les fichiers (files de tomcat et USer.sql) dans les repertoires dédiéset et qui fera l'installation de tomcat, mysql et Phpmyadmin.
  
  3- Diffucultés: 
  
- la difficulté rencontré était l'ajout du nom de l'application et le fichier target correspondant dans le repertoire.
+ la difficulté rencontré était l'affichage de la page web.
+ 
+ playbook role tomcat_serv_install : 
+ ---
+- name: copy war file
+  copy: 
+    src: "target/"
+    dest: "/srv/tomcat/webapps/"
+
+- name: copy sql file
+  copy: 
+    src: "USER.sql"
+    dest: "/srv/mysql/mysql-dump/"
+
+- name: Install container mysql
+#  become: yes
+  docker_container:
+    name: db
+    image: mysql:5.7
+    volumes:
+       - "/srv/mysql/mysql:/var/lib/mysql"
+       - "/srv/mysql/mysql-dump/:/docker-entrypoint-initdb.d"
+    env:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testdb1
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: root
+    ports:
+       - "3306:3306"
+    restart_policy: always
+
+- name: chown mysql
+  shell: 
+    cmd: sudo docker exec db chown -R mysql:mysql /var/lib/mysql 
+
+- name: Install container Phpadmin
+#  become: yes
+  docker_container:
+    name: phpadmin
+    image: phpmyadmin/phpmyadmin
+    links: db
+    ports:
+      - "8081:80"
+    env:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+
+- name: Install container tomcat
+#  become: yes
+  docker_container:
+    name: tomcat
+    image: tomcat
+    links: db
+    volumes:
+      - "/srv/tomcat/webapps/:/usr/local/tomcat/webapps/"
+    ports:
+      - "8082:8080"
+    env:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testdb1
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: root
+...
  
 ### Gitlab
 
@@ -286,5 +350,5 @@ Nous sommes obligés pour l'instant de nous rendre dans Gitlab et dans le projet
 
 Rendre public le site jekyll pour y accéder en dehors du vpn.
 
-![Optional Text](tomcat.png)
+
 
