@@ -9,6 +9,7 @@
     group: centos
 
 - name: installation du conteneur httpd
+  become: yes
   docker_container:
     name: httpd
     image: httpd:latest

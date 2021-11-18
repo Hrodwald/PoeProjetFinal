@@ -3,6 +3,7 @@
   file: path="{{ jenkins_dir }}" recurse=yes state=directory owner=centos group=centos
 
 - name: Install Jenkins container
+  become: yes
   docker_container:
     name: jenkins
     image: "{{ jenkins_image }}"
