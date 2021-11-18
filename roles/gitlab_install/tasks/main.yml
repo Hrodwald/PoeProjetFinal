@@ -12,7 +12,8 @@
     - gitlab/
 
 # Installation du conteneur Gitlab Community Edition
-- name: Installation de Gitlab CE 
+- name: Installation de Gitlab CE
+  become: yes 
   docker_container:
     name: gitlab
     image: gitlab/gitlab-ce:latest
@@ -33,6 +34,7 @@
       - ./gitlab/data:/var/opt/gitlab:Z
 
 - name : Installation d'un runner Gitlab
+  become: yes 
   docker_container:
     name: gitlab-runner
     image: gitlab/gitlab-ce:latest
