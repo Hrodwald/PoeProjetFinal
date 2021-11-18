@@ -10,11 +10,13 @@
     state: present
 
 - name: install python2-pip
+  become: yes
   yum:
     name: python2-pip
     state: present
     
 - name: Upgrade pip
+  become: yes
   pip: name=pip state=latest
   tags:
     - packages
@@ -23,8 +25,9 @@
   pip:
     name: [ "boto3", "botocore"]
     extra_args: "--user"
-    
+
 - name: Install python pip
+  become: yes
   yum:
     name: python3-pip
     state: present
@@ -34,5 +37,6 @@
   shell: "pip3 install --upgrade pip"
 
 - name: Install ansible
+  become: yes
   shell: "yum install -y ansible"
 ...
