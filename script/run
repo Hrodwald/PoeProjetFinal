@@ -1,0 +1,11 @@
+#!/bin/bash
+
+source $PWD/venv/bin/activate
+rm -rf $PWD/PoeProjetFinal
+git clone https://github.com/Hrodwald/PoeProjetFinal
+cd $PWD/PoeProjetFinal
+git checkout $1
+
+shift
+cd sources
+ansible-playbook $@

@@ -1,0 +1,24 @@
+#!/bin/bash
+# Script to run once on a new centos7 ansible master
+
+[[ $1 == "" ]] && (echo "Must provide user name as argument"; exit 1)
+
+echo -e "\ninstall useful package"
+yum install -y epel-release vim bash-completion python3 python3-pip
+
+echo -e "\nenable auto completion"
+source /etc/profile.d/bash_completion.sh
+
+echo -e "\ninstall ansible in virtual environment"
+python3 -m pip install virtualenv
+python3 -m virtualenv $PWD/venv
+source $PWD/venv/bin/activate
+python3 -m pip install ansible
+
+echo -e "\ncopy run file"
+cp $PWD/PoeProjetFinal/scripts/run $PWD/run
+
+echo -e "\nupdate permissions"
+chown -R $1:$1 $PWD/venv
+chown -R $1:$1 $PWD/PoeProjetFinal
+chown $1:$1 $PWD/run
