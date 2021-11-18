@@ -1,5 +1,16 @@
 ---
 
+- name: create gitlab home directories
+  file:
+    path: "./{{ item }}"
+    state: directory
+    owner: centos
+    group: centos
+  loop:
+    - gitlab/config
+    - gitlab/logs
+    - gitlab/
+
 # Installation du conteneur Gitlab Community Edition
 - name: Installation de Gitlab CE 
   docker_container:
@@ -17,9 +28,9 @@
       - 80:80
       - 22:22
     volumes:
-      - /srv/gitlab/config:/etc/gitlab:Z
-      - /srv/gitlab/logs:/var/log/gitlab:Z
-      - /srv/gitlab/data:/var/opt/gitlab:Z
+      - ./gitlab/config:/etc/gitlab:Z
+      - ./gitlab/logs:/var/log/gitlab:Z
+      - ./gitlab/data:/var/opt/gitlab:Z
 
 - name : Installation d'un runner Gitlab
   docker_container:
