@@ -110,7 +110,7 @@ La deuxièume difficulé était liée à un travail de recherche sur le web afin
  
  3- Diffucultés: 
  
- la difficulté rencontré était l'affichage de la page web.
+ la difficulté rencontré était l'affichage de la page web. En effet, la saisie de l'adresse IP et le port correspond ne suffit pas pour afficher la page web, il faut egalement ajouter dans la barre de recherche le nom de fichier : LoginWebApp-1.  
  
  <u>playbook role tomcat_serv_install : </u>
  
