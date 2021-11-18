@@ -49,27 +49,27 @@
   become: yes
   yum: name=python-docker state=latest enablerepo=extras
 
-- name: create test container
-  become: yes
-  docker_container:
-    name: alpine_test
-    image: alpine:latest
-    ports:
-      - 4000:4000
-    privileged: true
-
-- name: check container status
-  become: yes
-  command: docker ps
-  register: result
-
-- debug: var=result.stdout
-
-- name: delete test container
-  become: yes
-  docker_container:
-    name: alpine_test
-    state: absent
+#- name: create test container
+#  become: yes
+#  docker_container:
+#    name: alpine_test
+#    image: alpine:latest
+#    ports:
+#      - 4000:4000
+#    privileged: true
+#
+#- name: check container status
+#  become: yes
+#  command: docker ps
+#  register: result
+#
+#- debug: var=result.stdout
+#
+#- name: delete test container
+#  become: yes
+#  docker_container:
+#    name: alpine_test
+#    state: absent
 
 - name: DL Docker Compose
   become: yes
