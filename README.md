@@ -112,7 +112,9 @@ La deuxièume difficulé était liée à un travail de recherche sur le web afin
  
  la difficulté rencontré était l'affichage de la page web.
  
- playbook role tomcat_serv_install : 
+ <u>playbook role tomcat_serv_install : </u>
+ 
+ ```yml
  ---
 - name: copy war file
   copy: 
@@ -172,7 +174,7 @@ La deuxièume difficulé était liée à un travail de recherche sur le web afin
       MYSQL_DATABASE: testdb1
       MYSQL_USER: testuser
       MYSQL_PASSWORD: root
-...
+```
  
 ### Gitlab
 
