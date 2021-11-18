@@ -2,7 +2,16 @@
 
 ## Sommaire
 
-[ToC]
+[I. Le projet](#I-Le-projet)
+&nbsp; &nbsp; [1. Le contexte](#1-Le-contexte)
+&nbsp; &nbsp; [2. L'équipe](#2-L'équipe)
+[3. Structure](#2-Structure)
+[II. Le projet](#I-Le-projet)
+[1. Le contexte](#1-Le-contexte)
+[2. L'équipe](#2-L'équipe)
+[III. Le projet](#I-Le-projet)
+[1. Le contexte](#1-Le-contexte)
+[2. L'équipe](#2-L'équipe)
   
 ---
 
@@ -239,7 +248,7 @@ On récupère la clé dans les variables de gitlab et on envoyé le html sur la 
     - scp -r -i ~/jenkins2.pem -o StrictHostKeyChecking=no /builds/mat/test_jekyll/public/* centos@3.70.214.132:/etc/ansible/roles/gitlab/tasks/site/
 ```
 
-On rajoute dans gitlab les **variables d'environnement**² pour accéder à la machine distante :
+On rajoute dans gitlab les **variables d'environnement** pour accéder à la machine distante :
 
 #### Difficultés rencontrées 
 
