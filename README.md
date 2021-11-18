@@ -96,10 +96,20 @@ La première difficulté sur mise en place de serveur web python était de bien 
 La deuxièume difficulé était liée à un travail de recherche sur le web afin de comprendre les bonnes libraries python à importer dont HTTPserver.
 
 
-  
-
-
-
+ ### Deploiement de l'application Tomcat en utilisant Ansible
+ 
+ 1-Contexte :
+ 
+ Suite à la demande de l'entreprise Epsilon pour faire un déploiment  des ses apllications, on a choisi d'utiliser l'outil ansible afin d'automatiser l'installation et le running de l'application Tomcat.
+ 
+ 2- Travaux :
+ 
+ Notre démarche consiste à creer 2 playbook, le main playbook sera le playbook qui englobe tous les tasks, par contre le deuxieme playbook (tomcat_serv_insatall) est sous forme d'un role qui copie dans un premier temps les fichiers (files de tomcat et USer.sql) dans les repertoires dédiéset et qui fera l'installation de tomcat, mysql et Phpmyadmin.
+ 
+ 3- Diffucultés: 
+ 
+ la difficulté rencontré était l'ajout du nom de l'application et le fichier target correspondant dans le repertoire.
+ 
 ### Gitlab
 
 #### Cahier des charges
@@ -275,3 +285,6 @@ Nous sommes obligés pour l'instant de nous rendre dans Gitlab et dans le projet
 ### Prochaines étapes 
 
 Rendre public le site jekyll pour y accéder en dehors du vpn.
+
+![Optional Text](tomcat.png)
+
