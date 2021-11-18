@@ -76,281 +76,104 @@ Exemple code :
 - hosts: localhost
   connection: local
   gather_facts: False
-...
+```
         
 # Commentaire
 
-```
 ### Le serveur web python 
-1.Objectif
+**1.Objectif**
 
 L'objectif est de mettre en place un serveur web python sur le dépot Gitlab qui va permettre via un commit de faire un build de l'image docker.
 
-2. Travaux 
-
+**2.Travaux** 
 Pour la mise en place du serveur python, nous avons créer un reprtoire python_serv_install dans notre repertoire roles. On y retrouvera deux sous-répertoire files et tasks, qui contiennent l'ensemble de nos fichiers nécessaire pour la mise en place se notre serveur dont les fichiers simple_server.py,Dockerfile, main.yml et Jenkinsfile.
 
-3.Difficltés 
+
+
+
+Exemple code simple_server.py : 
+```yaml
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+
+def run(server_class=HTTPServer, handler_class=SimpleHTTPRequestHandler):
+    """Entrypoint for python server"""
+    server_address = ("0.0.0.0", 8000)
+    httpd = server_class(server_address, handler_class)
+    print("launching server...")
+    httpd.serve_forever()
+
+if __name__ == "__main__":
+    run()
+ ```
+
+ Exemple code du main : 
+ 
+ ```yaml
+   ---
+- name: Create Project Directory
+  file:
+    path: ~/project
+    state: directory
+    owner: centos
+    group: centos
+
+- name: Src file Python Server
+  copy:
+    src: target/
+    dest: ~/project/
+    owner: centos
+    group: centos
+    mode: 775
+    directory_mode: yes
+
+- name: Dockerfile Python Server
+  copy:
+    src: "Dockerfile"
+    dest: ~/project/
+    owner: centos
+    group: centos
+    mode: 755
+    directory_mode: yes
+
+- name: copy Jenkinsfile 
+  copy:
+    src: "Jenkinsfile"
+    dest: ~/project/
+    owner: centos
+    group: centos
+    mode: 755
+    directory_mode: yes
+   ```
+ Exemple code du Jenkinsfile  :
+```yaml
+   ---
+node {
+    def app
+
+    stage('Clone repository') {
+        /* Let's make sure we have the repository cloned to our workspace */
+
+        checkout scm
+    }
+
+    stage('Initialize'){
+        def dockerHome = tool 'docker'
+        env.PATH = "${dockerHome}/bin:${env.PATH}"
+    }
+
+    stage('Build image') {
+        /* This builds the actual image; synonymous to
+         * docker build on the command line */
+
+        app = docker.build("python/server")
+    }
+}
+```
+ **3.Difficltés **
 
 La première difficulté sur mise en place de serveur web python était de bien comprendre les attendus sur sa fonctionnalité et ses interactions avec les autres serveurs.
-La deuxièume difficulé était liée à un travail de recherche sur le web afin de comprendre les bonnes libraries python à importer dont HTTPserver.
-
-
- ### Deploiement de l'application Tomcat en utilisant Ansible
+La deuxièume difficulé était liée à un travail de recherche sur le web afin de comprendre les bonnes libraries python à importer dont HTTPserver. 
  
- 1-Contexte :
- 
- Suite à la demande de l'entreprise Epsilon pour faire un déploiment  des ses apllications, on a choisi d'utiliser l'outil ansible afin d'automatiser l'installation et le running de l'application Tomcat.
- 
- ![Optional Text](tomcat.png)
- 
- 2- Travaux :
- 
- Notre démarche consiste à creer 2 playbook, le main playbook sera le playbook qui englobe tous les tasks, par contre le deuxieme playbook (tomcat_serv_insatall) est sous forme d'un role qui copie dans un premier temps les fichiers (files de tomcat et USer.sql) dans les repertoires dédiéset et qui fera l'installation de tomcat, mysql et Phpmyadmin.
- 
- 3- Diffucultés: 
- 
- la difficulté rencontré était l'affichage de la page web. En effet, la saisie de l'adresse IP et le port correspond ne suffit pas pour afficher la page web, il faut egalement ajouter dans la barre de recherche le nom de fichier : LoginWebApp-1.  
- 
- <u>playbook role tomcat_serv_install : </u>
- 
- ```yml
- ---
-- name: copy war file
-  copy: 
-    src: "target/"
-    dest: "/srv/tomcat/webapps/"
-
-- name: copy sql file
-  copy: 
-    src: "USER.sql"
-    dest: "/srv/mysql/mysql-dump/"
-
-- name: Install container mysql
-#  become: yes
-  docker_container:
-    name: db
-    image: mysql:5.7
-    volumes:
-       - "/srv/mysql/mysql:/var/lib/mysql"
-       - "/srv/mysql/mysql-dump/:/docker-entrypoint-initdb.d"
-    env:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: testdb1
-      MYSQL_USER: testuser
-      MYSQL_PASSWORD: root
-    ports:
-       - "3306:3306"
-    restart_policy: always
-
-- name: chown mysql
-  shell: 
-    cmd: sudo docker exec db chown -R mysql:mysql /var/lib/mysql 
-
-- name: Install container Phpadmin
-#  become: yes
-  docker_container:
-    name: phpadmin
-    image: phpmyadmin/phpmyadmin
-    links: db
-    ports:
-      - "8081:80"
-    env:
-      PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: root
-
-- name: Install container tomcat
-#  become: yes
-  docker_container:
-    name: tomcat
-    image: tomcat
-    links: db
-    volumes:
-      - "/srv/tomcat/webapps/:/usr/local/tomcat/webapps/"
-    ports:
-      - "8082:8080"
-    env:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: testdb1
-      MYSQL_USER: testuser
-      MYSQL_PASSWORD: root
-```
- 
-### Gitlab
-
-#### Cahier des charges
-
-- [x] Faire un gitlab privé, qui nous permettra d'accéder au code via une addresse.
-- [x] Le code devra être dans un dépot pour permettre le versionning du code jekyll.
-- [x] Lorsqu'un commit sera effectué sur gitlab, Gitlab CI va effectuer une action qui va générer le code html
-- [x] Envoyer le code par une clé ssh pour le déployement
-
-#### Mise en place du Gitlab-ce dans un docker
-
-Création d'un outil de versionning via un docker et ansible.
-<u>Fichier de déployement ansible :</u>
-
-```yml=1
-- name: start gitlab container
-  docker_container:
-    name: gitlab
-    image: gitlab/gitlab-ce:latest
-    restart: yes
-    recreate: yes
-    privileged: yes
-    exposed:
-      - 443
-      - 80
-      - 22
-    ports:
-      - 443:443
-      - 80:80
-      - 22:22
-    volumes:
-      - /srv/gitlab/config:/etc/gitlab:Z
-      - /srv/gitlab/logs:/var/log/gitlab:Z
-      - /srv/gitlab/data:/var/opt/gitlab:Z
-```
-
-#### Mise en place du gilab-runner pour le CI Gitlab :
-
-Le runner est un outil nécessaire au bon fonctionnement de Gitlab CI.
-Il permet de lancer dans un docker une image qui va effectué des actions par rapport au code.
-
-<u>Code de déployement Ansible :</u>
 
 
-```yml=
-- name : Installation d'un runner Gitlab
-  become: yes 
-  docker_container:
-    name: gitlab-runner
-    image: gitlab/gitlab-ce:latest
-    restart: yes
-    recreate: yes
-    volumes:
-      - gitlab-runner:/etc/gitlab-runner
-      - /var/run/docker.sock:/var/run/docker.sock
-```
-
-Une fois installé le runner a besoin d'être lié au Gitlab CE qui a été crée auparavant.
-Pour ce faire on récupère dans le projet gitlab l'URL du site ainsi que le token
-Dans notre cas :
-url = "http://172.16.1.80/"
-registration-token = "nZtzStXzp9f3se7raJHN"
-
-<u>Fichier de déployement ansible :</u>
-
-```yml=1
-- name: Enregistrement du runner
-  command: 'docker exec -it gitlab-runner gitlab-runner register --non-interactive \
---executor "docker" \
---docker-image alpine:latest \
---url "http://172.16.1.80/" \
---clone-url "http://172.16.1.80/" \
---registration-token "nZtzStXzp9f3se7raJHN" \
---description "docker-runner" \
---tag-list "docker,aws" \
---run-untagged="true" \
---locked="false" \
---access-level="not_protected"'
-```
-
-### Jekyll
-
-Mise en place de jekyll dans GitLab CI
-
-#### Mise en place de l'integration continue sur site **Jekyll** :
-Le site va être compilé depuis le dépot GitLab et va être envoyé sur la machine **apache**
-
-```yml=1
-image: ruby:2.6
-
-variables:
-  JEKYLL_ENV: production
-  LC_ALL: C.UTF-8
-
-cache:
-  paths:
-    - vendor/
-
-before_script:
-  - gem install bundler
-  - bundle install --path vendor
-
-pages:
-  stage: deploy
-  script:
-    - bundle exec jekyll build -d public
-    - echo "$USER_KEY" > ~/jenkins2.pem
-    - chmod 600 ~/jenkins2.pem
-    - scp -r -i ~/jenkins2.pem -o StrictHostKeyChecking=no /builds/mat/test_jekyll/public/* centos@172.16.1.12:/etc/ansible/roles/gitlab/tasks/site/
-  artifacts:
-    paths:
-      - public
-  only:
-    variables:
-      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-```
-
-L'image déployée dans le docker est : ruby:2.6
-`image: ruby:2.6`
-
-La commande cache permet de garder les données d'installation dans le cache : 
-```yml
-cache:
-  paths:
-    - vendor/
-```
-
-Cette partie installe les pré-requis pour jekyll :
-```yml
-before_script:
-  - gem install bundler
-  - bundle install --path vendor
-```
-
-Ensuite on va compiler le markdown en html avec jekyll :
-
-```yml
-    - bundle exec jekyll build -d public
-```
-
-On récupère la clé dans les variables de gitlab et on envoyé le html sur la machine httpd :
-
-```yml
-    - echo "$USER_KEY" > ~/jenkins2.pem
-    - chmod 600 ~/jenkins2.pem
-    - scp -r -i ~/jenkins2.pem -o StrictHostKeyChecking=no /builds/mat/test_jekyll/public/* centos@3.70.214.132:/etc/ansible/roles/gitlab/tasks/site/
-```
-
-On rajoute dans gitlab les **variables d'environnement** pour accéder à la machine distante :
-
-#### Difficultés rencontrées 
-
-##### Installation de jekyll pour les tests
-Sur ma VM lors de l'installation de jekyll pour les tests, la commande `gem install jekyll` n'aboutissait pas.
-La raison était qu'il ne pouvait pas y accéder en ipv6
-Pour ce faire nous avons désactivé l'ipv6 en modifiant le fichier /etc/sysctl.conf avec les lignes suivantes :
-
-```conf
-net.ipv6.conf.all.disable_ipv6 = 1
-net.ipv6.conf.default.disable_ipv6 = 1
-```
-
-##### Installation de gitlab-ce
-Sur la VM lors des tests pour gitlab-ce et jenkins, la VM AWS arrivait rapidement à saturation (mémoire vive trop faible) avec une t2.micro
-Pour palier à cette limite on a décidé d'utiliser une VM t3.large.
-
-##### Installation du runner
-Le runner avait plusieurs problèmes pour son installation.
-Il a fallu rajouter l'option **clone_url** dans l'enregistrement du runner avec l'ip de la machine.
-Nous sommes obligés pour l'instant de nous rendre dans Gitlab et dans le projet pour récupérer le token.
-
-
-### Prochaines étapes 
-
-Rendre public le site jekyll pour y accéder en dehors du vpn.
-
-
-
+  
