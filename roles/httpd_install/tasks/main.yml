@@ -19,9 +19,9 @@
     volumes:
       - ./website:/usr/local/apache2/htdocs
 
-- name: Demarrer le service httpd
-  service:
-    name: httpd 
-    state: started
+#- name: Demarrer le service httpd
+#  service:
+#    name: httpd 
+#    state: started
 
 ...
