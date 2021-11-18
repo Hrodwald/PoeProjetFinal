@@ -6,6 +6,7 @@
   roles:
     - basics
     - init_mainserv
+    - docker_install
     - gitlab_install
     - role: conf_instances
       when: provides is defined
