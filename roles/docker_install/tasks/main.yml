@@ -1,5 +1,6 @@
 ---
 - name: remove old docker packages
+  become: yes
   yum:
     name:
       - docker
@@ -13,6 +14,7 @@
     state: absent
 
 - name: Install pre-req packages
+  become: yes
   yum:
     name: "{{item}}"
     state: latest
@@ -22,9 +24,11 @@
     - lvm2
 
 - name: Add Docker CE repo
+  become: yes
   shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
 - name: install docker packages
+  become: yes
   yum:
     name:
       - docker-ce
@@ -34,15 +38,19 @@
     update_cache: yes
 
 - name: check docker service
+  become: yes
   command: systemctl enable --now docker
 
 - name: install python-docker
+  become: yes
   yum: name=python-docker state=latest enablerepo=extras
 
 - name: DL Docker Compose
+  become: yes
   shell: curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
 - name: Apply executable permissions
+  become: yes
   shell: chmod +x /usr/local/bin/docker-compose
 
 - name: check if link exists
@@ -51,6 +59,7 @@
   register: link_docker_compose
 
 - name: create symbolic link
+  become: yes
   shell: ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
   when: link_docker_compose.stat.exists == False
 ...  
