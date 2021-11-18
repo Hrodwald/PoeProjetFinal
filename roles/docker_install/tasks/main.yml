@@ -23,19 +23,23 @@
     - device-mapper-persistent-data
     - lvm2
 
-- name: Add Docker CE repo
-  become: yes
-  shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+#- name: Add Docker CE repo
+#  become: yes
+#  shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
-- name: install docker packages
+#- name: install docker packages
+#  become: yes
+#  yum:
+#    name:
+#      - docker-ce
+#      - docker-ce-cli
+#      - containerd.io
+#    state: latest
+#    update_cache: yes
+
+- name: install docker
   become: yes
-  yum:
-    name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-    state: latest
-    update_cache: yes
+  yum: name=docker state=latest
 
 - name: check docker service
   become: yes
@@ -44,6 +48,28 @@
 - name: install python-docker
   become: yes
   yum: name=python-docker state=latest enablerepo=extras
+
+- name: create test container
+  become: yes
+  docker_container:
+    name: alpine_test
+    image: alpine:latest
+    ports:
+      - 4000:4000
+    privileged: true
+
+- name: check container status
+  become: yes
+  command: docker ps
+  register: result
+
+- debug: var=result.stdout
+
+- name: delete test container
+  become: yes
+  docker_container:
+    name: alpine_test
+    state: absent
 
 - name: DL Docker Compose
   become: yes
